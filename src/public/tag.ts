@@ -15,8 +15,6 @@ async function load() {
         textureMain[i+3] = (parseInt(hiByteRep.slice(6   ), 2) + parseInt(loByteRep.slice(6   ), 2)) * 42.5     
     }
 
-    console.log(textureMain)
-
     const textureMainImageData = new ImageData(textureMain, 1024)
     let textureMainBlob
 

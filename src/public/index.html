@@ -3,10 +3,9 @@
     <script src="aframe.min.js"></script>
     <script src="aframe-ar.js"></script>
     <body style="margin : 0px; overflow: hidden;">
-        <!--
         <a-scene embedded arjs>
-            <a-assets>
-            --><img id="tag-ar-texture-main"><!--
+            <a-assets timeout="100000">
+                <img id="tag-ar-texture-main">
             </a-assets>
             
             <a-marker preset="hiro">
@@ -20,7 +19,6 @@
             </a-marker>
         <a-entity camera></a-entity>
         </a-scene>
-        -->
     </body>
     <script src="tag.js"></script>
 </html>
