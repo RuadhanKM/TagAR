@@ -4,8 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "compile": "npx tsc && copyfiles -u 1 src/public/*.html dist && node --env-file=.env dist/index.js",
-    "dev": "nodemon -e ts,html -w src --exec \"npm run compile\""
+    "compile": "npx tsc && copyfiles -u 1 src/public/*.html dist",
+    "dev": "nodemon -e ts,html -w src --exec \"npm run compile && npm run deploy\"",
+    "deploy": "node --env-file=.env dist/index.js"
   },
   "author": "",
   "license": "ISC",
