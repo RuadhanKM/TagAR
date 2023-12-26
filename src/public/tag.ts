@@ -5,11 +5,11 @@ async function load() {
 
     console.log(textureMain)
 
-    const textureMainImageData = new ImageData(textureMain, 1024)
+    const textureMainImageData = new ImageData(textureMain, 256)
     let textureMainBlob
 
     {
-        let bufferCanvas = new OffscreenCanvas(1024, 1024)
+        let bufferCanvas = new OffscreenCanvas(256, 256)
         let bufferCtx = bufferCanvas.getContext("2d")
         if (!bufferCtx) return console.error("Failed to create buffer canvas")
         bufferCtx.putImageData(textureMainImageData, 0, 0)
