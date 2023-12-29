@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <script src="aframe.min.js"></script>
-    <script src="aframe-ar.js"></script>
+    <script type="module" src="bundle.js"></script>
     <body style="margin : 0px; overflow: hidden;">
         <a-scene embedded arjs>
             <a-assets timeout="100000">
-                <img id="tag-ar-texture-main">
+                <canvas id="tag-ar-texture-main" width="1024" height="1024"></canvas>
             </a-assets>
             
             <a-marker preset="hiro">
@@ -15,10 +14,11 @@
                 rotation="-90 0 0"
                 scale="3 3 3"
                 material="src: #tag-ar-texture-main"
+                canvas-updater
+                id="tag-ar-plane"
                 ></a-entity>
             </a-marker>
-        <a-entity camera></a-entity>
+            <a-entity camera></a-entity>
         </a-scene>
     </body>
-    <script src="tag.js"></script>
 </html>

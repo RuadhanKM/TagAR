@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import https from "https"
 import zlib from "zlib";
+import path from "path";
 
 const app: Express = express();
 const port = 3000;
@@ -12,6 +13,9 @@ const textureMain = Buffer.alloc(1024 * 1024 * 2).map(x => Math.random()*255 | 0
 
 app.use(express.static('dist/public'))
 app.use(express.static('src/static'))
+app.get("/three", (req, res) => {
+    res.sendFile(path.resolve(__dirname + "/../node_modules/three/build/three.module.js"))
+})
 app.get("/texture-main", (req, res) => {
     if (req.header('Accept-Encoding')?.split(', ').includes('gzip')) {
         res.setHeader('Content-Encoding', 'gzip')

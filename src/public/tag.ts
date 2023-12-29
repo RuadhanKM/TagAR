@@ -1,7 +1,26 @@
+//import AFRAME from "aframe"
+//import { type Mesh, Material } from "three"
+
+//console.log(AFRAME.AScene.renderStarted)
+
+let bufferCanvas = document.getElementById('tag-ar-texture-main') as HTMLCanvasElement
+let bufferCtx = bufferCanvas.getContext("2d")
+
+// AFRAME.registerComponent('canvas-updater', {
+//     dependencies: ['geometry', 'material'],
+
+//     tick: function () {
+//         var el = this.el;
+//         var material = (el.getObject3D('mesh') as Mesh).material;
+//         if (!(material instanceof Material)) return
+
+//         material.needsUpdate = true;
+//     }
+// });
+
 async function load() {
+    if (!bufferCtx) throw new Error("Failed to create rendering context!")
     const textureMainRaw = new Uint8ClampedArray(await (await fetch("texture-main")).arrayBuffer())
-    let textureMainDisplayNode: HTMLImageElement | null = document.getElementById('tag-ar-texture-main') as HTMLImageElement
-    if (!textureMainDisplayNode) return console.error("Could not find texture display node!")
 
     let textureMain = new Uint8ClampedArray(textureMainRaw.length*2)
 
@@ -16,18 +35,22 @@ async function load() {
     }
 
     const textureMainImageData = new ImageData(textureMain, 1024)
-    let textureMainBlob
-
-    {
-        let bufferCanvas = new OffscreenCanvas(1024, 1024)
-        let bufferCtx = bufferCanvas.getContext("2d")
-        if (!bufferCtx) return console.error("Failed to create buffer canvas")
-        bufferCtx.putImageData(textureMainImageData, 0, 0)
-        textureMainBlob = await bufferCanvas.convertToBlob()
-    }
-
-    
-    textureMainDisplayNode.src = URL.createObjectURL(textureMainBlob);
+    bufferCtx.putImageData(textureMainImageData, 0, 0)
 }
+
+let interval: NodeJS.Timeout
+
+document.addEventListener('touchend', e => {
+    console.log("end")
+    clearInterval(interval)
+})
+
+document.addEventListener('touchstart', e => {
+    interval = setInterval(async () => {
+        console.log("touch")
+        if (!bufferCtx) throw new Error("Failed to create rendering context!")
+        bufferCtx.fillRect(0, 0, 100, 100)
+    }, 50)
+})
 
 load()
