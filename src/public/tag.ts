@@ -1,10 +1,14 @@
-//import AFRAME from "aframe"
-//import { type Mesh, Material } from "three"
+const arjs = require("@ar-js-org/ar.js")
 
-//console.log(AFRAME.AScene.renderStarted)
+await new Promise(res => {
+    setInterval(() => {
+        if (document.readyState) res(0)
+    }, 300)
+})
 
 let bufferCanvas = document.getElementById('tag-ar-texture-main') as HTMLCanvasElement
 let bufferCtx = bufferCanvas.getContext("2d")
+if (!bufferCtx) throw new Error("Failed to create rendering context!")
 
 // AFRAME.registerComponent('canvas-updater', {
 //     dependencies: ['geometry', 'material'],
@@ -18,25 +22,22 @@ let bufferCtx = bufferCanvas.getContext("2d")
 //     }
 // });
 
-async function load() {
-    if (!bufferCtx) throw new Error("Failed to create rendering context!")
-    const textureMainRaw = new Uint8ClampedArray(await (await fetch("texture-main")).arrayBuffer())
+const textureMainRaw = new Uint8ClampedArray(await (await fetch("texture-main")).arrayBuffer())
 
-    let textureMain = new Uint8ClampedArray(textureMainRaw.length*2)
+let textureMain = new Uint8ClampedArray(textureMainRaw.length*2)
 
-    for (let i=0; i<textureMain.length; i+=4) {
-        let hiByteRep = textureMainRaw[i/2].toString(2).padStart(8, '0')
-        let loByteRep = textureMainRaw[i/2+1].toString(2).padStart(8, '0')
+for (let i=0; i<textureMain.length; i+=4) {
+    let hiByteRep = textureMainRaw[i/2].toString(2).padStart(8, '0')
+    let loByteRep = textureMainRaw[i/2+1].toString(2).padStart(8, '0')
 
-        textureMain[i+0] = (parseInt(hiByteRep.slice(0, 2), 2) + parseInt(loByteRep.slice(0, 2), 2)) * 42.5
-        textureMain[i+1] = (parseInt(hiByteRep.slice(2, 4), 2) + parseInt(loByteRep.slice(2, 4), 2)) * 42.5
-        textureMain[i+2] = (parseInt(hiByteRep.slice(4, 6), 2) + parseInt(loByteRep.slice(4, 6), 2)) * 42.5
-        textureMain[i+3] = (parseInt(hiByteRep.slice(6   ), 2) + parseInt(loByteRep.slice(6   ), 2)) * 42.5     
-    }
-
-    const textureMainImageData = new ImageData(textureMain, 1024)
-    bufferCtx.putImageData(textureMainImageData, 0, 0)
+    textureMain[i+0] = (parseInt(hiByteRep.slice(0, 2), 2) + parseInt(loByteRep.slice(0, 2), 2)) * 42.5
+    textureMain[i+1] = (parseInt(hiByteRep.slice(2, 4), 2) + parseInt(loByteRep.slice(2, 4), 2)) * 42.5
+    textureMain[i+2] = (parseInt(hiByteRep.slice(4, 6), 2) + parseInt(loByteRep.slice(4, 6), 2)) * 42.5
+    textureMain[i+3] = (parseInt(hiByteRep.slice(6   ), 2) + parseInt(loByteRep.slice(6   ), 2)) * 42.5     
 }
+
+const textureMainImageData = new ImageData(textureMain, 1024)
+bufferCtx.putImageData(textureMainImageData, 0, 0)
 
 let interval: NodeJS.Timeout
 
@@ -53,4 +54,5 @@ document.addEventListener('touchstart', e => {
     }, 50)
 })
 
-load()
+
+export {}
