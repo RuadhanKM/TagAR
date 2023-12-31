@@ -12,10 +12,8 @@ const credentials = {key: process.env.SSL_PRIVATE_KEY?.replace(/\\n/gm, "\n"), c
 const textureMain = Buffer.alloc(1024 * 1024 * 2).map(x => Math.random()*255 | 0b00_00_00_11)
 
 app.use(express.static('dist/public'))
-app.use(express.static('src/static'))
-app.get("/three", (req, res) => {
-    res.sendFile(path.resolve(__dirname + "/../node_modules/three/build/three.module.js"))
-})
+app.use(express.static('dist/static'))
+
 app.get("/texture-main", (req, res) => {
     if (req.header('Accept-Encoding')?.split(', ').includes('gzip')) {
         res.setHeader('Content-Encoding', 'gzip')
