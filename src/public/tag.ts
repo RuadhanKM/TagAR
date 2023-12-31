@@ -1,5 +1,16 @@
 const arjs = require("@ar-js-org/ar.js")
 
+AFRAME.registerComponent('canvas-updater', {
+    dependencies: ['geometry', 'material'],
+
+    tick: function () {
+        var el = this.el;
+        var material = (el.getObject3D('mesh') as any).material;
+
+        material.map.needsUpdate = true;
+    }
+});
+
 await new Promise(res => {
     setInterval(() => {
         if (document.readyState) res(0)
@@ -10,17 +21,6 @@ let bufferCanvas = document.getElementById('tag-ar-texture-main') as HTMLCanvasE
 let bufferCtx = bufferCanvas.getContext("2d")
 if (!bufferCtx) throw new Error("Failed to create rendering context!")
 
-// AFRAME.registerComponent('canvas-updater', {
-//     dependencies: ['geometry', 'material'],
-
-//     tick: function () {
-//         var el = this.el;
-//         var material = (el.getObject3D('mesh') as Mesh).material;
-//         if (!(material instanceof Material)) return
-
-//         material.needsUpdate = true;
-//     }
-// });
 
 const textureMainRaw = new Uint8ClampedArray(await (await fetch("texture-main")).arrayBuffer())
 
