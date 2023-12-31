@@ -1,5 +1,6 @@
-const arjs = require("@ar-js-org/ar.js")
+require("@ar-js-org/ar.js")
 const three = require("@ar-js-org/ar.js/node_modules/three")
+import * as sprayAudio from "./sfx";
 
 let textureMainMaterial: { map: { needsUpdate: boolean; }; }
 let textureMainObj: THREE.Object3D
@@ -41,7 +42,6 @@ let bufferCanvas = document.getElementById('tag-ar-texture-main') as HTMLCanvasE
 let bufferCtx = bufferCanvas.getContext("2d")
 if (!bufferCtx) throw new Error("Failed to create rendering context!")
 
-
 const textureMainRaw = new Uint8ClampedArray(await (await fetch("texture-main")).arrayBuffer())
 
 let textureMain = new Uint8ClampedArray(textureMainRaw.length*2)
@@ -59,21 +59,29 @@ for (let i=0; i<textureMain.length; i+=4) {
 const textureMainImageData = new ImageData(textureMain, 1280, 720)
 bufferCtx.putImageData(textureMainImageData, 0, 0)
 
-let interval: NodeJS.Timeout
+let interval: NodeJS.Timeout | undefined
 
 document.addEventListener('contextmenu', e => e.preventDefault(), {passive: false})
 
 document.addEventListener('touchend', e => {
     e.preventDefault()
+    if (!interval) return
     clearInterval(interval)
+    interval = undefined
+    sprayAudio.stop()
 }, {passive: false})
 
 const lineZero = new three.Vector3(0,0,0)
 const lineOne = new three.Vector3(0,0,1) 
+const updateRate = 20
 document.addEventListener('touchstart', e => {
     e.preventDefault()
+    if (interval) return
+    sprayAudio.start()
     interval = setInterval(async () => {
         if (!bufferCtx) throw new Error("Failed to create rendering context!")
+
+        if (!textureMainObj.visible) return
 
         let position: THREE.Vector3 = new three.Vector3()
         let normal: THREE.Vector3 = new three.Vector3()
@@ -91,7 +99,7 @@ document.addEventListener('touchstart', e => {
         bufferCtx.arc(localPlanePoint.x*(1280/textureMainObj.children[0].scale.x)+1280/2, localPlanePoint.z*(720/textureMainObj.children[0].scale.y)+720/2, 20, 0, 2 * Math.PI);
         bufferCtx.fill();
         textureMainMaterial.map.needsUpdate = true
-    }, 20)
+    }, updateRate)
 }, {passive: false})
 
 

@@ -3,7 +3,10 @@
     <script src="bundle.js"></script>
     <link rel="stylesheet" href="index.css">
     <body style="margin : 0px; overflow: hidden;">
-        <a-scene embedded arjs>
+        <a-scene 
+        embedded 
+        arjs
+        vr-mode-ui="enabled: false">
             <a-assets timeout="100000">
                 <canvas id="tag-ar-texture-main" width="1280" height="720"></canvas>
             </a-assets>
