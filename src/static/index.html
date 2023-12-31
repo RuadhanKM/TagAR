@@ -5,7 +5,7 @@
     <body style="margin : 0px; overflow: hidden;">
         <a-scene embedded arjs>
             <a-assets timeout="100000">
-                <canvas id="tag-ar-texture-main" width="1024" height="1024"></canvas>
+                <canvas id="tag-ar-texture-main" width="1280" height="720"></canvas>
             </a-assets>
             
             <a-marker get-position preset="hiro">
@@ -13,7 +13,7 @@
                 position="0 0 0"
                 geometry="primitive: plane"
                 rotation="-90 0 0"
-                scale="3 3 3"
+                scale="8.8 5 1"
                 material="src: #tag-ar-texture-main"
                 canvas-updater
                 id="tag-ar-plane"
@@ -21,6 +21,6 @@
             </a-marker>
             <a-entity camera></a-entity>
         </a-scene>
-        <img class="target-image" src="target.png"/>
+        <img width="50" height="50" class="target-image" src="target.png"/>
     </body>
 </html>

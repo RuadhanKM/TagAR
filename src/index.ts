@@ -9,7 +9,7 @@ const address = process.env.ADDR || "localhost"
 
 const credentials = {key: process.env.SSL_PRIVATE_KEY?.replace(/\\n/gm, "\n"), cert: process.env.SSL_CERT?.replace(/\\n/gm, "\n")};
 
-const textureMain = Buffer.alloc(1024 * 1024 * 2).map(x => Math.random()*255 | 0b00_00_00_11)
+const textureMain = Buffer.alloc(1280 * 720 * 2).map(x => 0b00_00_00_00)
 
 app.use(express.static('dist/public'))
 app.use(express.static('dist/static'))

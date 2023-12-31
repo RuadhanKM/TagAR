@@ -5,9 +5,9 @@
   "main": "src/index.ts",
   "private": "true",
   "scripts": {
-    "compile": "npx tsc --project ./tsconfig-server.json && npx webpack -c ./webpack.config.build.js && copyfiles -u 1 src/public/*.{html,css} dist && copyfiles -u 1 src/static/* dist",
-    "compile-dev": "npx tsc --project ./tsconfig-server.json && npx webpack -c ./webpack.config.dev.js && copyfiles -u 1 src/public/*.{html,css} dist && copyfiles -u 1 src/static/* dist",
-    "dev": "nodemon -e ts,html -w src --exec \"npm run compile-dev && npm run deploy\"",
+    "compile": "npx tsc --project ./tsconfig-server.json && npx webpack -c ./webpack.config.build.js && copyfiles -u 1 src/static/* dist",
+    "compile-dev": "npx tsc --project ./tsconfig-server.json && npx webpack -c ./webpack.config.dev.js && copyfiles -u 1 src/static/* dist",
+    "dev": "nodemon -e ts -w src --exec \"npm run compile-dev && npm run deploy\"",
     "deploy": "node --env-file=.env dist/index.js"
   },
   "author": "",

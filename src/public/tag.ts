@@ -56,7 +56,7 @@ for (let i=0; i<textureMain.length; i+=4) {
     textureMain[i+3] = (parseInt(hiByteRep.slice(6   ), 2) + parseInt(loByteRep.slice(6   ), 2)) * 42.5     
 }
 
-const textureMainImageData = new ImageData(textureMain, 1024)
+const textureMainImageData = new ImageData(textureMain, 1280, 720)
 bufferCtx.putImageData(textureMainImageData, 0, 0)
 
 let interval: NodeJS.Timeout
@@ -85,17 +85,13 @@ document.addEventListener('touchstart', e => {
         let planePoint = linePlaneIntersect(lineZero, lineOne, position, normal)
         if (!planePoint) return
 
-        let worldScale = new three.Vector3()
-        textureMainObj.getWorldScale(worldScale)
         let localPlanePoint = textureMainObj.worldToLocal(planePoint)
 
-        console.log((localPlanePoint.x+0.5)*1024, (-localPlanePoint.z+0.5)*1024)
-
         bufferCtx.beginPath();
-        bufferCtx.arc((localPlanePoint.x+0.5)*1024, (localPlanePoint.z-0.5)*1024, 50, 0, 2 * Math.PI);
+        bufferCtx.arc(localPlanePoint.x*(1280/textureMainObj.children[0].scale.x)+1280/2, localPlanePoint.z*(720/textureMainObj.children[0].scale.y)+720/2, 20, 0, 2 * Math.PI);
         bufferCtx.fill();
         textureMainMaterial.map.needsUpdate = true
-    }, 50)
+    }, 20)
 }, {passive: false})
 
 
