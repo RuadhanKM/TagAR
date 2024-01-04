@@ -1,11 +1,16 @@
 let actx = new AudioContext()
 
 let srcNode: AudioBufferSourceNode = actx.createBufferSource()
+
 let convolerNode: ConvolverNode = actx.createConvolver()
-let convolerGain: GainNode = actx.createGain()
-convolerGain.gain.value = 0.4
-convolerNode.connect(convolerGain)
-convolerGain.connect(actx.destination)
+let wetGain: GainNode = actx.createGain()
+let dryGain: GainNode = actx.createGain()
+wetGain.gain.value = 0.3
+dryGain.gain.value = 0
+dryGain.connect(convolerNode)
+convolerNode.connect(wetGain)
+wetGain.connect(actx.destination)
+dryGain.connect(actx.destination)
 srcNode.loop = true;   
 let started = false
 
@@ -24,11 +29,11 @@ fetch("/reverb.mp3", { mode: "cors" }).then(function (resp) { return resp.arrayB
 export function start() {
     if (!started) srcNode.start()
     started = true
-    srcNode.connect(actx.destination)
-    srcNode.connect(convolerNode)
+    dryGain.gain.linearRampToValueAtTime(1,actx.currentTime+0.045)
+    srcNode.connect(dryGain)
 }
 
 export function stop() {
-    srcNode.disconnect(actx.destination)
-    srcNode.disconnect(convolerNode)
+    dryGain.gain.value = 0
+    srcNode.disconnect(dryGain)
 }

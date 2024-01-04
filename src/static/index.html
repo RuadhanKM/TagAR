@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
-    <script src="bundle.js"></script>
     <link rel="stylesheet" href="index.css">
+    <script src="bundle.js"></script>
     <body style="margin : 0px; overflow: hidden;">
         <a-scene 
+        id="main-scene"
         embedded 
-        arjs
+        arjs="cameraParametersUrl: /camera_para.dat;"
+        device-orientation-permission-ui="enabled: false"
         vr-mode-ui="enabled: false">
-            <a-assets timeout="100000">
-                <canvas id="tag-ar-texture-main" width="1280" height="720"></canvas>
+            <a-assets id="tag-ar-assets" timeout="100000" class="disable-interaction">
+                <canvas class="disable-interaction" id="tag-ar-texture-main" width="1280" height="720"></canvas>
             </a-assets>
             
-            <a-marker get-position preset="hiro">
+            <a-entity light="type: ambient; color: #BBB"></a-entity>
+            <a-marker get-position type="pattern" url="/pattern-hiro.patt">
                 <a-entity
                 position="0 0 0"
                 geometry="primitive: plane"
@@ -24,6 +27,9 @@
             </a-marker>
             <a-entity camera></a-entity>
         </a-scene>
-        <img width="50" height="50" class="target-image" src="target.png"/>
+        <img width="50" height="50" class="absolute-centered disable-interaction" src="target.png"/>
+        <div class="absolute-centered modal disable-interaction">
+            <button class="absolute-centered" id="request-orientation-button">Click here to request orientation permission</button>
+        </div>
     </body>
 </html>

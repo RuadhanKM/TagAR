@@ -38,6 +38,23 @@ await new Promise(res => {
     }, 300)
 })
 
+const reqOrientationButton = document.getElementById("request-orientation-button")
+await new Promise((res, err) => {
+    if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( (DeviceMotionEvent as any).requestPermission ) === "function" ) {
+        reqOrientationButton?.addEventListener("click", () => {        
+            (DeviceMotionEvent as any).requestPermission()
+                .then( (response: string) => {
+                if ( response == "granted" ) {
+                    res(0)
+                }
+            }).catch( console.error )
+        })
+    } else {
+        res(0)
+    }
+})
+reqOrientationButton?.parentElement?.parentElement?.removeChild(reqOrientationButton.parentElement)
+
 let bufferCanvas = document.getElementById('tag-ar-texture-main') as HTMLCanvasElement
 let bufferCtx = bufferCanvas.getContext("2d")
 if (!bufferCtx) throw new Error("Failed to create rendering context!")
@@ -60,12 +77,16 @@ const textureMainImageData = new ImageData(textureMain, 1280, 720)
 bufferCtx.putImageData(textureMainImageData, 0, 0)
 
 let interval: NodeJS.Timeout | undefined
+let numFingers = 0
 
 document.addEventListener('contextmenu', e => e.preventDefault(), {passive: false})
 
 document.addEventListener('touchend', e => {
+    console.log(e.target)
     e.preventDefault()
+    numFingers--
     if (!interval) return
+    if (numFingers > 0) return
     clearInterval(interval)
     interval = undefined
     sprayAudio.stop()
@@ -73,9 +94,9 @@ document.addEventListener('touchend', e => {
 
 const lineZero = new three.Vector3(0,0,0)
 const lineOne = new three.Vector3(0,0,1) 
-const updateRate = 20
 document.addEventListener('touchstart', e => {
     e.preventDefault()
+    numFingers++
     if (interval) return
     sprayAudio.start()
     interval = setInterval(async () => {
@@ -96,10 +117,10 @@ document.addEventListener('touchstart', e => {
         let localPlanePoint = textureMainObj.worldToLocal(planePoint)
 
         bufferCtx.beginPath();
-        bufferCtx.arc(localPlanePoint.x*(1280/textureMainObj.children[0].scale.x)+1280/2, localPlanePoint.z*(720/textureMainObj.children[0].scale.y)+720/2, 20, 0, 2 * Math.PI);
+        bufferCtx.arc(localPlanePoint.x*(1280/textureMainObj.children[0].scale.x)+1280/2, localPlanePoint.z*(720/textureMainObj.children[0].scale.y)+720/2, 5, 0, 2 * Math.PI);
         bufferCtx.fill();
         textureMainMaterial.map.needsUpdate = true
-    }, updateRate)
+    }, 10)
 }, {passive: false})
 
 
