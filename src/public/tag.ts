@@ -82,7 +82,6 @@ let numFingers = 0
 document.addEventListener('contextmenu', e => e.preventDefault(), {passive: false})
 
 document.addEventListener('touchend', e => {
-    console.log(e.target)
     e.preventDefault()
     numFingers--
     if (!interval) return
